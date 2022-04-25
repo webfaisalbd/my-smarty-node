@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const res = require('express/lib/response');
 const app = express();
+app.use(cors());
+app.use(express.json());
 const port = process.env.PORT || 5000;
 
 app.get('/', (req,res)=>{
@@ -8,7 +11,7 @@ app.get('/', (req,res)=>{
 })
 
 const users = [
-    {id: 0, name: 'Faisal', email: 'faisal@gmail.com', phone: '01611111'},
+    
     {id: 1, name: 'Faisal', email: 'faisal@gmail.com', phone: '01711111'},
     {id: 2, name: 'Ahmed', email: 'ahmed@gmail.com', phone: '017222222'},
     {id: 3, name: 'Shajib', email: 'shajib@gmail.com', phone: '017333333'},
@@ -18,8 +21,21 @@ const users = [
     {id: 7, name: 'Iqra', email: 'iqra@gmail.com', phone: '017777777'},
 ]
 
+
+// app.get('/users',(req,res) => {
+//     res.send(users);
+// })
+
+
+// filter by search query parameter 
 app.get('/users',(req,res)=>{
-    res.send(users);
+    // console.log('query ', req.query);
+    // res.send(users);
+    if(req.query.name){
+        const search = req.query.name.toLocaleLowerCase();
+        const matched = users.filter(user => user.name.toLocaleLowerCase().includes(search));
+        res.send(matched);
+    }
 })
 
 app.get('/user/:id',(req,res) => {
@@ -30,6 +46,23 @@ app.get('/user/:id',(req,res) => {
     const user = users.find(u => u.id === id)
     res.send(user);
 })
+
+
+app.post('/user',(req,res) =>{
+    console.log('request',req.body);
+    const user = req.body;
+    user.id = users.length + 1;
+    users.push(user);
+
+    res.send(user)
+})
+
+
+app.get('/fruits', (req,res) => {
+    res.send(['mango','apple','orange']);
+})
+
+
 
 app.listen(port,()=>{
     console.log("Server running successfully");

@@ -23,3 +23,9 @@ app.get('/user/:id',(req,res) => {
     res.send(user);
 })
 ```
+
+
+##### install cors middleware into server
+
+`npm install cors`
+
